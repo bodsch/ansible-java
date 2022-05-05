@@ -1,0 +1,36 @@
+---
+
+- name: prepare
+  include_tasks: prepare.yml
+
+- name: download
+  include_tasks: download.yml
+  loop:
+    "{{ java_versions }}"
+  loop_control:
+    loop_var: java_version
+    label: "{{ java_version }}"
+  when:
+    - java_versions is defined
+    - java_versions | count > 0
+
+- name: install
+  include_tasks: install.yml
+  loop:
+    "{{ java_versions }}"
+  loop_control:
+    loop_var: java_version
+  when:
+    - java_versions is defined
+    - java_versions | count > 0
+
+- name: detect java version
+  include_tasks: version.yml
+
+- name: write facts
+  include_tasks: facts.yml
+
+- name: run cleanup
+  include_tasks: cleanup.yml
+
+...

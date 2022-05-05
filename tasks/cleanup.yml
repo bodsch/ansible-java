@@ -1,0 +1,19 @@
+---
+
+- block:
+    - name: remove remote temp directory
+      file:
+        path: "{{ java_cache_directory }}"
+        state: absent
+
+    - name: remove local temp directory
+      become: false
+      delegate_to: localhost
+      file:
+        path: "{{ java_local_tmp_directory }}"
+        state: absent
+        mode: 0750
+  when:
+    - java_automatic_cleanup
+
+...

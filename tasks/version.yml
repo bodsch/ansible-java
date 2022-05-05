@@ -1,0 +1,16 @@
+---
+
+- name: re-read setup
+  setup:
+
+- name: detect java versions
+  java_version:
+    versions: "{{ java_versions }}"
+    install_directory: "{{ java_install_directory }}"
+  register: installed_java
+
+- name: versions
+  debug:
+    msg: "{{ installed_java }}"
+
+...

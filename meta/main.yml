@@ -1,0 +1,32 @@
+---
+
+galaxy_info:
+  role_name: java
+  namespace: bodsch
+
+  author: Bodo Schulz
+  description: ansible role to install and configure varous java version
+
+  license: Apache
+  min_ansible_version: 2.10
+
+  platforms:
+    - name: ArchLinux
+    - name: Ubuntu
+      versions:
+        # 20.04
+        - focal
+    - name: Debian
+      versions:
+        # 10
+        - buster
+        - bullseye
+
+  galaxy_tags:
+    - system
+    - java
+    - development
+
+dependencies: []
+
+...

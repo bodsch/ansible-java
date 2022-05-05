@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# {{ ansible_managed }}
+cat <<EOF
+{{ installed_java.msg | to_nice_json }}
+EOF

@@ -1,0 +1,51 @@
+---
+
+- name: define java major version
+  set_fact:
+    java_full_version: "{{ java_version_map[java_version] | java_full_version(java_jvm,'linux', os_arch) }}"
+
+- name: defined java file
+  set_fact:
+    java_file: "{{ java_version_map[java_version] | basename }}"
+    _java_install_directory: "{{ java_install_directory }}/jdk-{{ java_full_version }}"
+
+- name: create remote temp directory
+  file:
+    path: "{{ java_remote_tmp_directory }}"
+    state: directory
+    mode: 0755
+
+- name: create remote installation directory
+  file:
+    path: "{{ _java_install_directory }}"
+    state: directory
+    mode: 0755
+
+- name: transfer archive from ansible controler to destination system
+  copy:
+    src: "{{ java_local_tmp_directory }}/{{ java_file }}"
+    dest: "{{ java_remote_tmp_directory }}/{{ java_file }}"
+    mode: 0644
+
+
+- name: unpack java version {{ java_version }} to {{ _java_install_directory }}
+  unarchive:
+    src: "{{ java_remote_tmp_directory }}/{{ java_file }}"
+    dest: "{{ _java_install_directory }}/"
+    remote_src: true
+    mode: 0755
+    extra_opts:
+      - --strip-components={{ 2 if java_version | int == 9 else 1 }}
+
+- name: define JAVA_HOME to {{ _java_install_directory }}
+  set_fact:
+    java_home: "{{ _java_install_directory }}"
+
+- name: insert custom profile script to define PATH variables
+  template:
+    src: java.sh.j2
+    dest: "{{ _java_install_directory }}/profile.sh"
+    owner: root
+    group: root
+    mode: 0755
+...
