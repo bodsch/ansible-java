@@ -27,7 +27,6 @@
     dest: "{{ java_remote_tmp_directory }}/{{ java_file }}"
     mode: 0644
 
-
 - name: unpack java version {{ java_version }} to {{ _java_install_directory }}
   unarchive:
     src: "{{ java_remote_tmp_directory }}/{{ java_file }}"

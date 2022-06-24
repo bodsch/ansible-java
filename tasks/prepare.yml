@@ -31,13 +31,18 @@
 - name: gathering facts now
   setup:
 
-
 - name: create download directory
   become: false
   delegate_to: "{{ java_delegate_to }}"
   file:
     path: "{{ java_local_tmp_directory }}"
     state: directory
+    mode: 0750
+
+- name: create install directory
+  file:
+    state: directory
+    path: "{{ java_install_directory }}"
     mode: 0750
 
 - name: create ansible local facts directory

@@ -53,6 +53,13 @@ class JavaVersion(object):
 
         r = {}
 
+        if not os.path.isdir(self.install_directory):
+            return dict(
+                changed=False,
+                failed=False,
+                msg="No installed versions of Java found."
+            )
+
         for item in os.listdir(self.install_directory):
             self.module.log(msg="  - {}".format(item))
             binary = os.path.join(self.install_directory, item, "bin", "java")
