@@ -60,6 +60,8 @@ java_version_map:
   "15": "OpenJDK15U-jdk_x64_linux_hotspot_15.0.2_7.tar.gz"
   "16": "OpenJDK16U-jdk_x64_linux_hotspot_16.0.2_7.tar.gz"
 
+java_default_version: ""
+  
 java_direct_download: false
 
 java_download:
@@ -92,6 +94,8 @@ In each of the directories a `profile.sh` file is created which exports the `JAV
 and extends the `PATH` variables.
 
 **There is no Java version activated by default!**
+
+But if you want to set a Java version as default, you can define `java_default_version` accordingly.
 
 
 #### Example

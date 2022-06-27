@@ -10,4 +10,6 @@ java_version_map:
 
 java_type: "jre"
 
+java_default_version: 11
+
 ...

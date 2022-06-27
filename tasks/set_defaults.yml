@@ -1,0 +1,29 @@
+---
+
+- name: define java full version
+  set_fact:
+    java_full_version: "{{ java_version_map[java_default_version | string] | java_full_version(java_jvm, 'linux', os_arch) }}"
+
+- name: defined java file
+  set_fact:
+    java_install_directory: "{{ java_install_directory }}/jdk-{{ java_full_version }}"
+
+- name: detect profile script
+  stat:
+    path: "{{ java_install_directory }}/profile.sh"
+    get_checksum: false
+  register: java_profile
+  ignore_errors: true
+
+- name: set {{ java_full_version }} as java default
+  file:
+    state: link
+    src: "{{ java_install_directory }}/profile.sh"
+    dest: /etc/profile.d/java.sh
+    mode: 0755
+    force: true
+    follow: false
+  when:
+    - java_profile.stat.exists | default('false')
+
+...

@@ -30,6 +30,12 @@
 - name: write facts
   include_tasks: facts.yml
 
+- name: set default java
+  include_tasks: set_defaults.yml
+  when:
+    - java_default_version | string | count > 0
+    - java_default_version | string in java_supported_versions
+
 - name: run cleanup
   include_tasks: cleanup.yml
 

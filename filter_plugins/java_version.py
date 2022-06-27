@@ -79,7 +79,6 @@ class FilterModule(object):
 
         return result
 
-
     def java_release_version(self, name, java_jvm, operation_system, arch):
         """
         """
@@ -118,11 +117,9 @@ class FilterModule(object):
                     # result:  16.0.1%2B9
                     result = full_version.replace("_", "%2B")
 
-
         display.v("return '{}'".format(result))
 
         return result
-
 
     def checksum(self, data, operation_system, arch):
         """

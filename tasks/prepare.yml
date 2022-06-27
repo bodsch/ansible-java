@@ -6,12 +6,6 @@
       ansible_virtualization_role | default('host') == 'guest' and
       ansible_virtualization_type | default('none') == 'docker' }}"
 
-- name: d
-  debug:
-    msg:
-      - "{{ java_versions | default([]) | count | int }}"
-      - "{{ java_version_map | default({}) | count | int }}"
-
 - name: Check whether required variables have been defined
   fail:
     msg: "needed variable are not defined"

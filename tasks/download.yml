@@ -10,8 +10,8 @@
 
 - name: define java full version
   set_fact:
-    java_full_version: "{{ java_version_map[java_version] | java_full_version(java_jvm,'linux', os_arch) }}"
-    java_release_version: "{{ java_version_map[java_version] | java_release_version(java_jvm,'linux', os_arch) }}"
+    java_full_version: "{{ java_version_map[java_version] | java_full_version(java_jvm, 'linux', os_arch) }}"
+    java_release_version: "{{ java_version_map[java_version] | java_release_version(java_jvm, 'linux', os_arch) }}"
     java_file: "{{ java_version_map[java_version] | basename }}"
 
 - name: define java download file

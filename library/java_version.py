@@ -31,6 +31,7 @@ EXAMPLES = """
 
 """
 
+
 class JavaVersion(object):
     """
         Main Class
