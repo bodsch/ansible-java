@@ -52,7 +52,7 @@
   file:
     state: directory
     path: "{{ java_install_directory }}"
-    mode: 0750
+    mode: 0775
 
 - name: create ansible local facts directory
   file:

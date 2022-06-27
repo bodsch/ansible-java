@@ -32,7 +32,7 @@
     src: "{{ java_remote_tmp_directory }}/{{ java_file }}"
     dest: "{{ _java_install_directory }}/"
     remote_src: true
-    mode: 0755
+    mode: 0775
     extra_opts:
       - --strip-components={{ 2 if java_version | int == 9 else 1 }}
 
@@ -46,6 +46,6 @@
     dest: "{{ _java_install_directory }}/profile.sh"
     owner: root
     group: root
-    mode: 0755
+    mode: 0775
 
 ...
