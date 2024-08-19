@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -51,12 +51,12 @@ jobs:
 
     steps:
       - name: check out the codebase.
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           path: 'ansible-java'
 
       - name: set up python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -102,12 +102,12 @@ jobs:
 
     steps:
       - name: check out the codebase.
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           path: 'ansible-java'
 
       - name: set up python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
