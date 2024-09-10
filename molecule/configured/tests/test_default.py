@@ -144,7 +144,7 @@ def test_jdk_path(host, get_vars):
         #    'bin/jar',
 
         for i in files:
-            fl = f"{p}/{i}"
+            fl = "{}/{}".format(p, i)
             f = host.file(fl)
             assert f.is_file
 
@@ -172,10 +172,10 @@ def test_environment(host, get_vars):
     for version in versions:
         p = install_path(host, version)
 
-        content = host.file(f'{p}/profile.sh').content_string
+        content = host.file('{0}/profile.sh'.format(p)).content_string
 
         # path = 'PATH="${{PATH:+${{PATH}}:}}${{JAVA_HOME}}/bin"'
-        home = f'export JAVA_HOME="{p}"'
+        home = 'export JAVA_HOME="{0}"'.format(p)
 
         # assert path in content
         assert home in content

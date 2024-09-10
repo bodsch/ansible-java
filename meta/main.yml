@@ -2,6 +2,7 @@
 
 galaxy_info:
   role_name: java
+  namespace: bodsch
 
   author: Bodo Schulz
   description: ansible role to install and configure varous java version
@@ -20,6 +21,7 @@ galaxy_info:
         # 10
         - buster
         - bullseye
+        - bookworm
 
   galaxy_tags:
     - system
