@@ -2,17 +2,17 @@
 # Ansible Role:  `java`
 
 Ansible role to install different Java versions.  
-During installation, mak can choose between *JDK* and *JRE* (When the required archive is available!).
+During installation, make can choose between *JDK* and *JRE* (When the required archive is available!).
 
-
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/bodsch/ansible-java/CI)][ci]
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bodsch/ansible-java/main.yml?logo=github&branch=main)][ci]
 [![GitHub issues](https://img.shields.io/github/issues/bodsch/ansible-java)][issues]
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/bodsch/ansible-java)][releases]
+[![Ansible Downloads](https://img.shields.io/ansible/role/d/bodsch/java?logo=ansible)][galaxy]
 
 [ci]: https://github.com/bodsch/ansible-java/actions
 [issues]: https://github.com/bodsch/ansible-java/issues?q=is%3Aopen+is%3Aissue
 [releases]: https://github.com/bodsch/ansible-java/releases
-
+[galaxy]: https://galaxy.ansible.com/ui/standalone/roles/bodsch/java/
 
 All archives are stored on the Ansible controller. These are then copied to the target system and unpacked into the target directory.
 
@@ -26,8 +26,8 @@ However, this must be explicitly activated by setting `java_direct_download` to 
 
 * ArchLinux
 * Debian based
-    - Debian 10 / 11
-    - Ubuntu 20.04
+    - Debian 10 / 11 /  12
+    - Ubuntu 20.04 / 22.04 / 24.04
 
 ## Contribution
 
@@ -116,4 +116,4 @@ But if you want to set a Java version as default, you can define `java_default_v
 
 [Apache](LICENSE)
 
-`FREE SOFTWARE, HELL YEAH!`
+**FREE SOFTWARE, HELL YEAH!**
