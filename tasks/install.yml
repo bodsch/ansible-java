@@ -2,7 +2,7 @@
 
 - name: define java major version
   set_fact:
-    java_full_version: "{{ java_version_map[java_version] | java_full_version(java_jvm,'linux', os_arch) }}"
+    java_full_version: "{{ java_version_map[java_version] | java_full_version(java_jvm,'linux', system_architecture) }}"
 
 - name: defined java file
   set_fact:
@@ -13,26 +13,33 @@
   file:
     path: "{{ java_remote_tmp_directory }}"
     state: directory
-    mode: 0755
+    mode: "0755"
 
 - name: create remote installation directory
   file:
     path: "{{ _java_install_directory }}"
     state: directory
-    mode: 0755
+    mode: "0775"
 
 - name: transfer archive from ansible controler to destination system
   copy:
     src: "{{ java_local_tmp_directory }}/{{ java_file }}"
     dest: "{{ java_remote_tmp_directory }}/{{ java_file }}"
-    mode: 0644
+    mode: "0644"
+
+- name: detect the extracted archive
+  ansible.builtin.stat:
+    path: "{{ _java_install_directory }}/bin/java"
+  register: stat_java_binary
 
 - name: unpack java version {{ java_version }} to {{ _java_install_directory }}
+  when:
+    - not stat_java_binary.stat.exists
   unarchive:
     src: "{{ java_remote_tmp_directory }}/{{ java_file }}"
     dest: "{{ _java_install_directory }}/"
     remote_src: true
-    mode: 0775
+    mode: "0775"
     extra_opts:
       - --strip-components={{ 2 if java_version | int == 9 else 1 }}
 
@@ -46,6 +53,6 @@
     dest: "{{ _java_install_directory }}/profile.sh"
     owner: root
     group: root
-    mode: 0775
+    mode: "0775"
 
 ...

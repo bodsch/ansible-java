@@ -2,7 +2,7 @@
 
 - name: define java full version
   set_fact:
-    java_full_version: "{{ java_version_map[java_default_version | string] | java_full_version(java_jvm, 'linux', os_arch) }}"
+    java_full_version: "{{ java_version_map[java_default_version | string] | java_full_version(java_jvm, 'linux', system_architecture) }}"
 
 - name: defined java file
   set_fact:

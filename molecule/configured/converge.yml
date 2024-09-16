@@ -8,6 +8,6 @@
     NETRC: ''
 
   roles:
-    - role: ansible-java
+    - role: ansible-multi-java
 
 ...

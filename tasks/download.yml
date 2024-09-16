@@ -10,8 +10,8 @@
 
 - name: define java full version
   set_fact:
-    java_full_version: "{{ java_version_map[java_version] | java_full_version(java_jvm, 'linux', os_arch) }}"
-    java_release_version: "{{ java_version_map[java_version] | java_release_version(java_jvm, 'linux', os_arch) }}"
+    java_full_version: "{{ java_version_map[java_version] | java_full_version(java_jvm, 'linux', system_architecture) }}"
+    java_release_version: "{{ java_version_map[java_version] | java_release_version(java_jvm, 'linux', system_architecture) }}"
     java_file: "{{ java_version_map[java_version] | basename }}"
 
 - name: define java download file
@@ -24,25 +24,51 @@
         __java_checksums: "{{ lookup('url', java_download_file  + '.sha256.txt', wantlist=True) | list }}"
       run_once: true
 
-    - name: get checksum for {{ os_arch }} architecture
+    - name: get checksum for {{ system_architecture }} architecture
       set_fact:
-        __java_checksum: "{{ __java_checksums | java_checksum('linux', os_arch) }}"
+        __java_checksum: "{{ __java_checksums | java_checksum('linux', system_architecture) }}"
   delegate_to: localhost
 
-- name: fetch java {{ java_version }} from download-server {{ java_download.url }}
+- name: detect the downloaded archive
   become: false
   delegate_to: "{{ java_delegate_to }}"
-  get_url:
-    url: "{{ java_download_file }}"
-    dest: "{{ java_local_tmp_directory }}/{{ java_file }}"
-    # timeout: 320
-    url_username: "{{ java_download.username | default(omit) }}"
-    url_password: "{{ java_download.password | default(omit) }}"
-    checksum: "sha256:{{ __java_checksum }}"
-  no_log: "{{ not lookup('env', 'ANSIBLE_DEBUG') | bool }}"
-  register: _download_archive
-  until: _download_archive is succeeded
-  retries: 2
-  delay: 2
+  run_once: "{{ 'false' if java_direct_download else 'true' }}"
+  ansible.builtin.stat:
+    path: "{{ java_local_tmp_directory }}/{{ java_file }}"
+  register: stat_java_archive
+
+- name: download
+  when:
+    - stat_java_archive.stat is defined
+    - not stat_java_archive.stat.exists | default('false')
+  block:
+    - name: fetch java {{ java_version }} from download-server {{ java_download.url }}
+      become: false
+      delegate_to: "{{ java_delegate_to }}"
+      get_url:
+        url: "{{ java_download_file }}"
+        dest: "{{ java_local_tmp_directory }}/{{ java_file }}"
+        # timeout: 320
+        url_username: "{{ java_download.username | default(omit) }}"
+        url_password: "{{ java_download.password | default(omit) }}"
+        checksum: "sha256:{{ __java_checksum }}"
+      no_log: "{{ not lookup('env', 'ANSIBLE_DEBUG') | bool }}"
+      register: _download_archive
+      until: _download_archive is succeeded
+      retries: 2
+      delay: 2
+
+  rescue:
+    - name: delete download directory
+      become: false
+      delegate_to: "{{ java_delegate_to }}"
+      run_once: "{{ 'false' if java_direct_download else 'true' }}"
+      ansible.builtin.file:
+        path: "{{ java_local_tmp_directory }}"
+        state: absent
+
+    - name: exit with fail
+      ansible.builtin.fail:
+        msg: A serious error occurred when downloading the archive.
 
 ...

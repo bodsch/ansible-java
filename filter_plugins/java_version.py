@@ -36,88 +36,57 @@ class FilterModule(object):
     def java_full_version(self, name, java_jvm, operation_system, arch):
         """
         """
-        display.v("java_full_version(name, {}, {}, {})".format(java_jvm, operation_system, arch))
+        display.vv(f"java_full_version({name}, {java_jvm}, {operation_system}, {arch})")
 
-        result = 0
+        major_version, full_version = self._java_version(name, java_jvm, operation_system, arch)
 
-        basename = os.path.basename(name)
-        # display.v(" name '{}'".format(name))
-        # display.v(" basename '{}'".format(basename))
-        name = basename.lower()
-        # name = name.replace('%2B','_').lower()
+        # version 8
+        if major_version == '8':
+            # return: 8u275b01
+            result = full_version
+        else:
+            re_filter = re.compile(r"(?P<date>^\d{4}-\d{2}-\d{2}).*$")
+            match = re_filter.search(full_version)
 
-        re_filter = re.compile(r"(?<=openjdk)(?P<major_version>[\d]+).*-(?:jdk|jre)_{1}_{0}_(?:hotspot|openj9)_(?P<full_version>.*).tar.gz$".format(operation_system, arch))
-
-        match = re_filter.search(name)
-
-        if match:
-            major_version = match.group('major_version')
-            full_version = match.group('full_version')
-
-            display.v(" major_version '{}'".format(major_version))
-            display.v(" full_version  '{}'".format(full_version))
-
-            # version 8
-            if major_version == '8':
-                # return: 8u275b01
-                result = full_version
+            if match:
+                # version with date
+                # return: 11.20210117
+                result = f"{major_version}.{match.group('date').replace('-', '')}"
             else:
-                re_filter = re.compile(r"(?P<date>^\d{4}-\d{2}-\d{2}).*$")
+                # return: 11.0.9.1
+                re_filter = re.compile(r"(?P<version>^[\d.]+).*$")
                 match = re_filter.search(full_version)
+                result = match.group('version')
 
-                if match:
-                    # version with date
-                    # return: 11.20210117
-                    result = "{}.{}".format(major_version, match.group('date').replace('-', ''))
-                else:
-                    # return: 11.0.9.1
-                    re_filter = re.compile(r"(?P<version>^[\d.]+).*$")
-                    match = re_filter.search(full_version)
-                    result = match.group('version')
-
-        display.v("return '{}'".format(result))
+        display.v(f"return '{result}'")
 
         return result
 
     def java_release_version(self, name, java_jvm, operation_system, arch):
         """
         """
-        display.v("java_release_version(name, {}, {}, {})".format(java_jvm, operation_system, arch))
+        display.vv(f"java_release_version({name}, {java_jvm}, {operation_system}, {arch})")
 
-        result = 0
+        major_version, full_version = self._java_version(name, java_jvm, operation_system, arch)
 
-        basename = os.path.basename(name)
-        name = basename.lower()
+        # version 8
+        if major_version == '8':
+            # return: 8u275b01
+            result = full_version
+        else:
+            re_filter = re.compile(r"(?P<date>^\d{4}-\d{2}-\d{2}).*$")
+            match = re_filter.search(full_version)
 
-        re_filter = re.compile(r"(?<=openjdk)(?P<major_version>[\d]+).*-(?:jdk|jre)_{1}_{0}_(?:hotspot|openj9)_(?P<full_version>.*).tar.gz$".format(operation_system, arch))
-
-        match = re_filter.search(name)
-
-        if match:
-            major_version = match.group('major_version')
-            full_version = match.group('full_version')
-
-            display.v(" major_version '{}'".format(major_version))
-            display.v(" full_version  '{}'".format(full_version))
-
-            # version 8
-            if major_version == '8':
-                # return: 8u275b01
-                result = full_version
+            if match:
+                # version with date
+                # return: 11.20210117
+                result = f"{major_version}.{match.group('date').replace('-', '')}"
             else:
-                re_filter = re.compile(r"(?P<date>^\d{4}-\d{2}-\d{2}).*$")
-                match = re_filter.search(full_version)
+                # version: 16.0.1_9
+                # result:  16.0.1%2B9
+                result = full_version.replace("_", "%2B")
 
-                if match:
-                    # version with date
-                    # return: 11.20210117
-                    result = "{}.{}".format(major_version, match.group('date').replace('-', ''))
-                else:
-                    # version: 16.0.1_9
-                    # result:  16.0.1%2B9
-                    result = full_version.replace("_", "%2B")
-
-        display.v("return '{}'".format(result))
+        display.v(f"return '{result}'")
 
         return result
 
@@ -132,8 +101,8 @@ class FilterModule(object):
 
         re_filter = fr'(?P<checksum>[0-9a-z](?:-?[0-9a-z]){{63}}).*(?<=openjdk).*-(?:jdk|jre)_{arch}_{operation_system}_(?:hotspot|openj9)_(?P<full_version>.*).tar.gz$'
 
-        display.v(" re_filter  '{}'".format(re_filter))
-        display.v(" data       '{}' {}".format(data, type(data)))
+        # display.v(" re_filter  '{}'".format(re_filter))
+        # display.v(" data       '{}' {}".format(data, type(data)))
 
         if isinstance(data, list):
             # filter OS
@@ -143,11 +112,28 @@ class FilterModule(object):
 
             # checksum = re.findall(re_filter, data)
 
-        display.v(" checksum  '{}'".format(checksum))
+        # display.v(f" checksum  '{checksum}'")
 
         if isinstance(checksum, str):
             checksum = checksum.split(" ")[0]
 
-        display.v("= checksum: {}".format(checksum))
+        display.v(f"= checksum: {checksum}")
 
         return checksum
+
+    def _java_version(self, name, java_jvm, operation_system, arch):
+        """ """
+        display.vv(f"_java_version({name}, {java_jvm}, {operation_system}, {arch})")
+
+        basename = os.path.basename(name)
+        name = basename.lower()
+
+        re_filter = re.compile(r"(?<=openjdk)(?P<major_version>[\d]+).*-(?:jdk|jre)_{1}_{0}_(?:hotspot|openj9)_(?P<full_version>.*).tar.gz$".format(operation_system, arch))
+
+        match = re_filter.search(name)
+
+        if match:
+            major_version = match.group('major_version')
+            full_version = match.group('full_version')
+
+        return major_version, full_version

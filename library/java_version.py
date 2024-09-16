@@ -65,7 +65,7 @@ class JavaVersion(object):
             self.module.log(msg="  - {}".format(item))
             binary = os.path.join(self.install_directory, item, "bin", "java")
 
-            if(os.path.isfile(binary)):
+            if (os.path.isfile(binary)):
                 self.module.log(msg="    - {}".format(binary))
 
                 rc, out, err = self._exec(
@@ -74,30 +74,30 @@ class JavaVersion(object):
 
                 date = "unknown"
 
-                if(rc == 0):
+                if (rc == 0):
                     # openjdk version "1.8.0_275"
                     # openjdk version "9.0.4"
                     # openjdk version "12.0.2" 2019-07-16
                     re_filter = re.compile(r'^openjdk version "(?P<version>[\d._]+)".*')
                     match = re_filter.search(err)
 
-                if(match):
+                if (match):
                     full_version = match.group('version')
                     version_array = full_version.split('.')
                     # self.module.log(msg="      - {}".format(version_array))
-                    if(int(version_array[0]) == 1 and int(version_array[1]) == 8):
+                    if (int(version_array[0]) == 1 and int(version_array[1]) == 8):
                         # == JDK8
                         major_version = version_array[1]
-                    elif(int(version_array[0]) == 9):
+                    elif (int(version_array[0]) == 9):
                         # == JDK9
                         major_version = version_array[0]
                     else:
                         # > JDK9
                         re_filter = re.compile(r'^openjdk version "(?P<version>[\d.]+)" (?P<date>.*).*')
                         match = re_filter.search(err)
-                        if(match):
+                        if (match):
                             major_version = version_array[0]
-                            if(match.group('date')):
+                            if (match.group('date')):
                                 date = match.group('date')
 
                     r[full_version] = dict(
